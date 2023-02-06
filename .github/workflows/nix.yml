@@ -1,0 +1,15 @@
+name: "NixOS Package Build"
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+jobs:
+  nixos-build:
+    name: "Build package"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v18
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - run: "nix-build --no-out-link -E 'with import <nixpkgs> { }; callPackage ./default.nix { }'"
